@@ -52,14 +52,13 @@ Action Input: the input to the action
 Observation: the result of the action
 ```
 
+DO NOT include New input, Thought, Action, Action Input, or Observation in your response to the human. These are only for the AI to use.
 When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
 
 ```
 Thought: Do I need to use a tool? No
 {ai_prefix}: [your response here]
 ```
-
-DO NOT include Thought, Action, Action Input, or Observation in your response to the human. These are only for the AI to use.
 """
 
 VISUAL_CHATGPT_SUFFIX = """You are very strict to the filename correctness and will never fake a file name if it does not exist.
@@ -871,6 +870,7 @@ class ConversationBot:
     def run_text(self, text, state):
         self.agent.memory.buffer = cut_dialogue_history(self.agent.memory.buffer, keep_last_n_words=500)
         res = self.agent({"input": text})
+        res['output'] = re.sub(r'\n\nNew input(.*\n)*.*','',s)
         res['output'] = res['output'].replace("\\", "/")
         response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
         state = state + [(text, response)]
