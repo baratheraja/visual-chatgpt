@@ -1,6 +1,12 @@
 import argparse
 import sys
 import os
+
+
+os.environ["OPENAI_API_TYPE"] = "azure"
+os.environ["OPENAI_API_VERSION"] = "2023-07-01-preview"
+os.environ["OPENAI_API_BASE"] = "https://pasanalyticstest.openai.azure.com"
+
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 import gradio as gr
@@ -13,6 +19,7 @@ from langchain.agents.initialize import initialize_agent
 from langchain.agents.tools import Tool
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.llms.openai import OpenAI
+from langchain.llms.openai import AzureOpenAI
 import re
 import uuid
 from diffusers import StableDiffusionInpaintPipeline
@@ -801,7 +808,7 @@ class BLIPVQA:
 class ConversationBot:
     def __init__(self):
         print("Initializing VisualChatGPT")
-        self.llm = OpenAI(temperature=0)
+        self.llm = AzureOpenAI(deployment_name="turbo35",temperature=0,model_name="gpt-35-turbo")
         #self.edit = ImageEditing(device="cuda:0")
         self.i2t = ImageCaptioning(device="cuda:0")
         self.t2i = T2I(device="cuda:0")
