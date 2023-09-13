@@ -29,7 +29,7 @@ from langchain.chains.conversation.memory import ConversationBufferMemory
 #from langchain.llms.openai import OpenAI
 #from langchain.llms.openai import AzureOpenAI
 from langchain.chat_models import AzureChatOpenAI
-
+from langchain.chains import LLMChain
 
 VISUAL_CHATGPT_PREFIX = """Visual ChatGPT is designed to be able to assist with a wide range of text and visual related tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. Visual ChatGPT is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
 
@@ -37,7 +37,7 @@ Visual ChatGPT is able to process and understand large amounts of text and image
 
 Human may provide new figures to Visual ChatGPT with a description. The description helps Visual ChatGPT to understand this image, but Visual ChatGPT should use tools to finish following tasks, rather than directly imagine from the description.
 
-Overall, Visual ChatGPT is a powerful visual dialogue assistant tool that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics. Visual ChatGPT will not use any tools if it is not an image related task.
+Overall, Visual ChatGPT is a powerful visual dialogue assistant tool that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics.
 
 
 TOOLS:
@@ -45,36 +45,28 @@ TOOLS:
 
 Visual ChatGPT  has access to the following tools:"""
 
-VISUAL_CHATGPT_FORMAT_INSTRUCTIONS = """To use a tool, please use the following format:
-
+VISUAL_CHATGPT_FORMAT_INSTRUCTIONS = """Use the following format:
 ```
-Thought: Do I need to use a tool? Yes
+Question: the input question you must answer
+Thought: you should always think about what to do
 Action: the action to take, should be one of [{tool_names}]
 Action Input: the input to the action
 Observation: the result of the action
-```
-
-DO NOT include New input, Thought, Action, Action Input, or Observation in your response to the human. These are only for the AI to use.
-When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
-
-```
-Thought: Do I need to use a tool? No
-{ai_prefix}: [your response here]
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
 ```
 """
 
 VISUAL_CHATGPT_SUFFIX = """You are very strict to the filename correctness and will never fake a file name if it does not exist.
 You will remember to provide the image file name loyally if it's provided in the last tool observation.
-
-Begin!
-
-Previous conversation history:
-{chat_history}
-
-New input: {input}
 Since Visual ChatGPT is a text language model, Visual ChatGPT must use tools to observe images rather than imagination.
 The thoughts and observations are only visible for Visual ChatGPT, Visual ChatGPT should remember to repeat important information in the final response for Human. 
-Thought: Do I need to use a tool? {agent_scratchpad}"""
+Begin!
+Previous conversation history:
+{chat_history}
+Question: {input}
+{agent_scratchpad}"""
 
 os.makedirs('image', exist_ok=True)
 
@@ -852,7 +844,7 @@ class ConversationBot:
         for class_name, device in load_dict.items():
             self.models[class_name] = globals()[class_name](device=device)
 
-        self.tools = []
+        self.tools = [Tool(name="Language Model", description="use this tool for general purpose queries and logic", func=llm_chain.run)]
         for class_name, instance in self.models.items():
             for e in dir(instance):
                 if e.startswith('inference'):
