@@ -86,6 +86,21 @@ Since Visual ChatGPT is a text language model, Visual ChatGPT must use tools to 
 The thoughts and observations are only visible for Visual ChatGPT, Visual ChatGPT should remember to repeat important information in the final response for Human. 
 Thought: Do I need to use a tool? {agent_scratchpad}"""
 
+
+from typing import List
+class NewAzureOpenAI(AzureOpenAI):
+    stop: List[str] = None
+    @property
+    def _invocation_params(self):
+        params = super()._invocation_params
+        # fix InvalidRequestError: logprobs, best_of and echo parameters are not available on gpt-35-turbo model.
+        params.pop('logprobs', None)
+        params.pop('best_of', None)
+        params.pop('echo', None)
+        #params['stop'] = self.stop
+        return params
+
+
 def cut_dialogue_history(history_memory, keep_last_n_words=500):
     tokens = history_memory.split()
     n_tokens = len(tokens)
@@ -808,7 +823,7 @@ class BLIPVQA:
 class ConversationBot:
     def __init__(self):
         print("Initializing VisualChatGPT")
-        self.llm = AzureOpenAI(deployment_name="turbo35",temperature=0,model_name="gpt-35-turbo")
+        self.llm = NewAzureOpenAI(deployment_name="turbo35",temperature=0,model_name="gpt-35-turbo")
         #self.edit = ImageEditing(device="cuda:0")
         self.i2t = ImageCaptioning(device="cuda:0")
         self.t2i = T2I(device="cuda:0")
