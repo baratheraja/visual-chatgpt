@@ -59,6 +59,8 @@ Final Answer: the final answer to the original input question
 
 VISUAL_CHATGPT_SUFFIX = """You are very strict to the filename correctness and will never fake a file name if it does not exist.
 You will remember to provide the image file name loyally if it's provided in the last tool observation.
+Since Visual ChatGPT is a text language model, Visual ChatGPT must use tools to observe images rather than imagination.
+The thoughts and observations are only visible for Visual ChatGPT, Visual ChatGPT should remember to repeat important information in the final response for Human. 
 
 Begin!
 
@@ -66,9 +68,7 @@ Previous conversation history:
 {chat_history}
 
 Question: {input}
-Since Visual ChatGPT is a text language model, Visual ChatGPT must use tools to observe images rather than imagination.
-The thoughts and observations are only visible for Visual ChatGPT, Visual ChatGPT should remember to repeat important information in the final response for Human. 
-Thought: Do I need to use a tool? {agent_scratchpad}"""
+{agent_scratchpad}"""
 
 os.makedirs('image', exist_ok=True)
 
