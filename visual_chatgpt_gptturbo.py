@@ -30,6 +30,7 @@ from langchain.chains.conversation.memory import ConversationBufferMemory
 #from langchain.llms.openai import AzureOpenAI
 from langchain.chat_models import AzureChatOpenAI
 from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
 
 VISUAL_CHATGPT_PREFIX = """Visual ChatGPT is designed to be able to assist with a wide range of text and visual related tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. Visual ChatGPT is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
 
@@ -844,6 +845,9 @@ class ConversationBot:
         for class_name, device in load_dict.items():
             self.models[class_name] = globals()[class_name](device=device)
 
+        prompt = PromptTemplate(
+            input_variables=['query'],
+            template="{query}"
         self.tools = [Tool(name="Language Model", description="use this tool for general purpose queries and logic", func=llm_chain.run)]
         for class_name, instance in self.models.items():
             for e in dir(instance):
