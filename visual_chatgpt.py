@@ -840,7 +840,9 @@ class ConversationBot:
         if 'ImageCaptioning' not in load_dict:
             raise ValueError("You have to load ImageCaptioning as a basic function for VisualChatGPT")
 
-        self.llm = NewAzureOpenAI(deployment_name="turbo35",temperature=0,model_name="gpt-35-turbo")
+        
+        #self.llm = NewAzureOpenAI(deployment_name="turbo35",temperature=0,model_name="gpt-35-turbo")
+        self.llm = AzureOpenAI(deployment_name="davinci003",temperature=0,model_name="text-davinci-003")
         self.memory = ConversationBufferMemory(memory_key="chat_history", output_key='output')
 
         self.models = dict()
