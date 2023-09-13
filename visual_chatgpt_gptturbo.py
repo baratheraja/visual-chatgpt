@@ -870,7 +870,7 @@ class ConversationBot:
                           'suffix': VISUAL_CHATGPT_SUFFIX}, )
 
     def run_text(self, text, state):
-        self.agent.memory.chat_memory.messages = cut_dialogue_history(self.agent.memory.chat_memory.messages, keep_last_n_words=500)
+        #self.agent.memory.chat_memory.messages = cut_dialogue_history(self.agent.memory.chat_memory.messages, keep_last_n_words=500)
         res = self.agent({"input": text})
         res['output'] = re.sub(r'\n\nNew input(.*\n)*.*','',res['output'])
         res['output'] = res['output'].replace("\\", "/")
@@ -900,7 +900,7 @@ class ConversationBot:
                        "rather than directly imagine from my description. If you understand, say \"Received\". \n".format(
             image_filename, description)
         AI_prompt = "Received.  "
-        self.agent.memory.chat_memory.messages = self.agent.memory.chat_memory.messages + Human_prompt + 'AI: ' + AI_prompt
+        self.agent.memory.chat_memory.messages = self.agent.memory.chat_memory.messages + [Human_prompt + 'AI: ' + AI_prompt]
         state = state + [(f"![](/file={image_filename})*{image_filename}*", AI_prompt)]
         print(f"\nProcessed run_image, Input image: {image_filename}\nCurrent state: {state}\n"
               f"Current Memory: {self.agent.memory.chat_memory.messages}")
