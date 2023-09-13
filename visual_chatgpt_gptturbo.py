@@ -847,7 +847,7 @@ class ConversationBot:
 
         prompt = PromptTemplate(
             input_variables=['query'],
-            template="{query}"
+            template="{query}")
         self.tools = [Tool(name="Language Model", description="use this tool for general purpose queries and logic", func=llm_chain.run)]
         for class_name, instance in self.models.items():
             for e in dir(instance):
