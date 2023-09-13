@@ -58,6 +58,8 @@ When you have a response to say to the Human, or if you do not need to use a too
 Thought: Do I need to use a tool? No
 {ai_prefix}: [your response here]
 ```
+
+DO NOT include Thought, Action, Action Input, or Observation in your response to the human. These are only for the AI to use.
 """
 
 VISUAL_CHATGPT_SUFFIX = """You are very strict to the filename correctness and will never fake a file name if it does not exist.
