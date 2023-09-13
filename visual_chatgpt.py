@@ -43,7 +43,7 @@ TOOLS:
 
 Visual ChatGPT  has access to the following tools:"""
 
-VISUAL_CHATGPT_FORMAT_INSTRUCTIONS = """Use the following format:
+VISUAL_CHATGPT_FORMAT_INSTRUCTIONS = """To use a tool, please use the following format:
 
 ```
 Thought: Do I need to use a tool? Yes
@@ -70,7 +70,7 @@ Previous conversation history:
 
 New input: {input}
 Since Visual ChatGPT is a text language model, Visual ChatGPT must use tools to observe images rather than imagination.
-The thoughts and observations are only visible for Visual ChatGPT. 
+The thoughts and observations are only visible for Visual ChatGPT, Visual ChatGPT should remember to repeat important information in the final response for Human. 
 Thought: Do I need to use a tool? {agent_scratchpad}"""
 
 os.makedirs('image', exist_ok=True)
