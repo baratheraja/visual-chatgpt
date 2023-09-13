@@ -43,20 +43,17 @@ TOOLS:
 
 Visual ChatGPT  has access to the following tools:"""
 
-VISUAL_CHATGPT_FORMAT_INSTRUCTIONS = """To use a tool, please use the following format:
+VISUAL_CHATGPT_FORMAT_INSTRUCTIONS = """Use the following format:
 
 ```
-Thought: Do I need to use a tool? Yes
+Question: the input question you must answer
+Thought: you should always think about what to do
 Action: the action to take, should be one of [{tool_names}]
 Action Input: the input to the action
 Observation: the result of the action
-```
-
-When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
-
-```
-Thought: Do I need to use a tool? No
-{ai_prefix}: [your response here]
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
 ```
 """
 
@@ -68,7 +65,7 @@ Begin!
 Previous conversation history:
 {chat_history}
 
-New input: {input}
+Question: {input}
 Since Visual ChatGPT is a text language model, Visual ChatGPT must use tools to observe images rather than imagination.
 The thoughts and observations are only visible for Visual ChatGPT, Visual ChatGPT should remember to repeat important information in the final response for Human. 
 Thought: Do I need to use a tool? {agent_scratchpad}"""
