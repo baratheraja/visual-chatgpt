@@ -870,7 +870,7 @@ class ConversationBot:
     def run_text(self, text, state):
         self.agent.memory.buffer = cut_dialogue_history(self.agent.memory.buffer, keep_last_n_words=500)
         res = self.agent({"input": text})
-        res['output'] = re.sub(r'\n\nNew input(.*\n)*.*','',s)
+        res['output'] = re.sub(r'\n\nNew input(.*\n)*.*','',res['output']])
         res['output'] = res['output'].replace("\\", "/")
         response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
         state = state + [(text, response)]
