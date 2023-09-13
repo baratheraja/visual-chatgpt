@@ -26,8 +26,10 @@ from controlnet_aux import OpenposeDetector, MLSDdetector, HEDdetector
 from langchain.agents.initialize import initialize_agent
 from langchain.agents.tools import Tool
 from langchain.chains.conversation.memory import ConversationBufferMemory
-from langchain.llms.openai import OpenAI
-from langchain.llms.openai import AzureOpenAI
+#from langchain.llms.openai import OpenAI
+#from langchain.llms.openai import AzureOpenAI
+from langchain.chat_models import AzureChatOpenAI
+
 
 VISUAL_CHATGPT_PREFIX = """Visual ChatGPT is designed to be able to assist with a wide range of text and visual related tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. Visual ChatGPT is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
 
@@ -76,18 +78,18 @@ Thought: Do I need to use a tool? {agent_scratchpad}"""
 
 os.makedirs('image', exist_ok=True)
 
-from typing import List
-class NewAzureOpenAI(AzureOpenAI):
-    stop: List[str] = None
-    @property
-    def _invocation_params(self):
-        params = super()._invocation_params
-        # fix InvalidRequestError: logprobs, best_of and echo parameters are not available on gpt-35-turbo model.
-        params.pop('logprobs', None)
-        params.pop('best_of', None)
-        params.pop('echo', None)
-        #params['stop'] = self.stop
-        return params
+# from typing import List
+# class NewAzureOpenAI(AzureOpenAI):
+#     stop: List[str] = None
+#     @property
+#     def _invocation_params(self):
+#         params = super()._invocation_params
+#         # fix InvalidRequestError: logprobs, best_of and echo parameters are not available on gpt-35-turbo model.
+#         params.pop('logprobs', None)
+#         params.pop('best_of', None)
+#         params.pop('echo', None)
+#         #params['stop'] = self.stop
+#         return params
 
 def seed_everything(seed):
     random.seed(seed)
@@ -842,8 +844,8 @@ class ConversationBot:
             raise ValueError("You have to load ImageCaptioning as a basic function for VisualChatGPT")
 
         
-        self.llm = NewAzureOpenAI(deployment_name="turbo35",temperature=0,model_name="gpt-35-turbo")
-        #self.llm = AzureOpenAI(deployment_name="davinci003",temperature=0,model_name="text-davinci-003")
+        #self.llm = NewAzureOpenAI(deployment_name="turbo35",temperature=0,model_name="gpt-35-turbo")
+        self.llm = AzureChatOpenAI(deployment_name="davinci003",temperature=0,model_name="text-davinci-003")
         self.memory = ConversationBufferMemory(memory_key="chat_history", output_key='output')
 
         self.models = dict()
